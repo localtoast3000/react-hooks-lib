@@ -16,7 +16,7 @@ function WindowEventProvider({
   events: string[];
   children: ReactNode;
 }) {
-  const [event, setEvent] = useState<Event | undefined>(undefined);
+  const [event, setEvent] = useState<any>({});
 
   useEffect(() => {
     events.forEach((eventType) => window.addEventListener(eventType, setEvent));
