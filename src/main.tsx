@@ -7,7 +7,7 @@ import { WindowEventProvider } from './contexts/window-events';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <WindowEventProvider events={['keydown', 'keyup', 'resize', 'click']}>
+    <WindowEventProvider events={['keydown', 'keyup', 'resize']}>
       <Index />
     </WindowEventProvider>
   </React.StrictMode>

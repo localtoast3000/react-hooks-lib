@@ -2,14 +2,18 @@ import styles from '../styles/pages/index.module.css';
 import Logo from '@/components/shared/icons/logo';
 import { BasicBtn } from '@/components/shared/buttons/buttons';
 import { useWindowEvent } from '@/contexts/window-events';
-import { useEffect } from 'react';
+import { useInterval, useTimeout } from '@/hooks/async';
 
 export default function Index() {
   const event = useWindowEvent();
 
-  useEffect(() => {
-    console.log(event.type);
-  }, [event]);
+  useInterval(() => {
+    console.log('Hello');
+  }, 200);
+
+  useTimeout(() => {
+    console.log('Now');
+  }, 2000);
 
   return (
     <main className={styles.mainContainer}>
