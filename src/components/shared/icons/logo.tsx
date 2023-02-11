@@ -35,10 +35,10 @@ export default function Logo({
           x2='0'
           y2='32'
           gradientUnits='userSpaceOnUse'>
-          <stop stop-color='#BC4E9C' />
+          <stop stopColor='#BC4E9C' />
           <stop
             offset='1'
-            stop-color='#F80759'
+            stopColor='#F80759'
           />
         </linearGradient>
       </defs>

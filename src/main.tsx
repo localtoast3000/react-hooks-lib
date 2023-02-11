@@ -3,9 +3,12 @@ import ReactDOM from 'react-dom/client';
 import './styles/typography';
 import './styles/global.css';
 import Index from './pages/index';
+import { WindowEventProvider } from './contexts/window-events';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <Index />
+    <WindowEventProvider events={['keydown', 'keyup', 'resize', 'click']}>
+      <Index />
+    </WindowEventProvider>
   </React.StrictMode>
 );

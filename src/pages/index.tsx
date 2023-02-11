@@ -1,7 +1,16 @@
 import styles from '../styles/pages/index.module.css';
 import Logo from '@/components/shared/icons/logo';
+import { BasicBtn } from '@/components/shared/buttons/buttons';
+import { useWindowEvent } from '@/contexts/window-events';
+import { useEffect } from 'react';
 
 export default function Index() {
+  const event = useWindowEvent();
+
+  useEffect(() => {
+    console.log(event.type);
+  }, [event]);
+
   return (
     <main className={styles.mainContainer}>
       <div className={styles.innerWrapper}>
@@ -14,7 +23,7 @@ export default function Index() {
           <h1 className={styles.header}>React Hooks Lib</h1>
         </header>
         <div className={styles.midSection}>
-          <button className={styles.btn}>Get started</button>
+          <BasicBtn className={styles.btn}>Get started</BasicBtn>
         </div>
       </div>
     </main>
