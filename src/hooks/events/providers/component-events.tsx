@@ -1,15 +1,36 @@
 import { createContext, ReactNode, useState, useEffect, useContext } from 'react';
 
-const ComponentEventsContext = createContext<any>(undefined);
+interface AddEventListenersProps {
+  ref: any;
+  id: string;
+  types: string[];
+}
+
+interface ComponentEvent {
+  ref: HTMLElement;
+  types: string[];
+  event: null | Event;
+}
+
+interface ComponentEvents {
+  [id: string]: ComponentEvent;
+}
+
+interface ContextValue {
+  addEventListeners: Function;
+  events: ComponentEvents;
+}
+
+const ComponentEventsContext = createContext<undefined | ContextValue>(undefined);
 
 function ComponentEventsProvider({ children }: { children: ReactNode }) {
-  const [componentEvents, setComponentEvents] = useState<any>({});
+  const [componentEvents, setComponentEvents] = useState<ComponentEvents | {}>({});
 
   useEffect(() => {
-    let handler = (e: any) => e;
+    let handler: Function = () => {};
 
-    Object.entries(componentEvents).forEach(([id, component]: any) => {
-      handler = async (e: any) => {
+    Object.entries(componentEvents).forEach(([id, component]) => {
+      handler = async (e: Event) => {
         let tempComponentEvents = componentEvents;
 
         await new Promise((resolve) => {
@@ -17,8 +38,7 @@ function ComponentEventsProvider({ children }: { children: ReactNode }) {
             setComponentEvents({
               ...componentEvents,
               [id]: {
-                ref: component.ref,
-                types: component.types,
+                ...component,
                 event: e,
               },
             })
@@ -29,12 +49,11 @@ function ComponentEventsProvider({ children }: { children: ReactNode }) {
           // Gives the event time to be mounted
           setTimeout(() => {
             resolve(
-              Object.entries(tempComponentEvents).forEach(([key, val]: any) => {
+              Object.entries(tempComponentEvents).forEach(([key, val]) => {
                 tempComponentEvents = {
                   ...componentEvents,
                   [key]: {
-                    ref: val.ref,
-                    types: val.types,
+                    ...val,
                     event: null,
                   },
                 };
@@ -47,34 +66,28 @@ function ComponentEventsProvider({ children }: { children: ReactNode }) {
       };
 
       component.types.forEach((type: string) => {
+        //@ts-ignore
         component.ref.addEventListener(type, handler);
       });
     });
     return () =>
-      Object.values(componentEvents).forEach((component: any) => {
+      Object.values(componentEvents).forEach((component) => {
         component.types.forEach((type: string) => {
+          //@ts-ignore
           component.ref.removeEventListener(type, handler);
         });
       });
   }, []);
 
-  const addEventListeners = ({
-    ref,
-    id,
-    types,
-  }: {
-    ref: any;
-    id: string;
-    types: string[];
-  }) => {
+  const addEventListeners = ({ ref, id, types }: AddEventListenersProps) => {
     if (componentEvents.hasOwnProperty(id)) return;
-    setComponentEvents((refs: any) => {
-      refs[id] = {
+    setComponentEvents((state: ComponentEvents) => {
+      state[id] = {
         ref,
         types,
         event: null,
       };
-      return refs;
+      return state;
     });
   };
 
@@ -86,6 +99,10 @@ function ComponentEventsProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ *
+ * @returns addEventListener function and component events object
+ */
 function useComponentEvents() {
   const context = useContext(ComponentEventsContext);
   if (context === undefined)

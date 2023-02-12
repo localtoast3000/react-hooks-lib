@@ -3,6 +3,7 @@ import Logo from '@/components/shared/icons/logo';
 import { useState, useEffect } from 'react';
 import { BasicBtn } from '@/components/shared/buttons/buttons';
 import { useComponentEvents } from '@/hooks/events/providers/component-events';
+import Wow from './wow';
 
 export default function Index() {
   const { events } = useComponentEvents();
@@ -10,13 +11,13 @@ export default function Index() {
 
   useEffect(() => {
     const basicBtnEvent = events.basicButton?.event?.type;
-    console.log(basicBtnEvent);
-    if (basicBtnEvent === 'mouseover') {
-      setTextColor('red');
-    } else if (basicBtnEvent === 'mouseout') {
+    console.log(events);
+    if (basicBtnEvent === 'mousedown') {
+      setTextColor('grey');
+    } else if (basicBtnEvent === 'mouseout' || basicBtnEvent === 'mouseup') {
       setTextColor('black');
     }
-  }, [events]);
+  }, [events.basicButton]);
 
   return (
     <main className={styles.mainContainer}>
@@ -29,12 +30,13 @@ export default function Index() {
           />
           <h1
             className={styles.header}
-            style={{ color: textColor }}>
+            style={{ color: textColor, transition: 'color 0.2s ease-in' }}>
             React Hooks Lib
           </h1>
         </header>
         <div className={styles.midSection}>
           <BasicBtn className={styles.btn}>Get started</BasicBtn>
+          <Wow />
         </div>
       </div>
     </main>
