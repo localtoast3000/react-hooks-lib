@@ -10,8 +10,8 @@ export default function BasicBtn({ className, children, ...props }: AnyProps) {
       ref={(ref) =>
         addEventListeners({
           ref,
-          id: 'basic-button',
-          types: ['mousedown', 'mouseup', 'mouseleave', 'mouseout'],
+          id: 'basicButton',
+          types: ['mouseover', 'mouseout', 'mousedown', 'mouseup'],
         })
       }
       className={`${styles.btn} ${className}`}

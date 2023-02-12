@@ -2,13 +2,6 @@ import { createContext, ReactNode, useState, useEffect, useContext } from 'react
 
 const ComponentEventsContext = createContext<any>(undefined);
 
-/**
- *
- * @param props
- * @param {string[]} props.events - Discribes the events that are to be loaded onto the component event listener
- * @param {ReactNode} props.children - The React node that will have the events provided to
- * @returns The ComponentEventsContext.Provider that will provide the fired event to the useComponentEvent() hook
- */
 function ComponentEventsProvider({ children }: { children: ReactNode }) {
   const [componentEvents, setComponentEvents] = useState<any>({});
 
@@ -17,6 +10,8 @@ function ComponentEventsProvider({ children }: { children: ReactNode }) {
 
     Object.entries(componentEvents).forEach(([id, component]: any) => {
       handler = async (e: any) => {
+        let tempComponentEvents = componentEvents;
+
         await new Promise((resolve) => {
           resolve(
             setComponentEvents({
@@ -30,15 +25,24 @@ function ComponentEventsProvider({ children }: { children: ReactNode }) {
           );
         });
 
-        Object.entries(componentEvents).forEach(([key, val]: any) => {
-          setComponentEvents({
-            ...componentEvents,
-            [key]: {
-              ref: val.ref,
-              types: val.types,
-              event: null,
-            },
-          });
+        await new Promise((resolve) => {
+          // Gives the event time to be mounted
+          setTimeout(() => {
+            resolve(
+              Object.entries(tempComponentEvents).forEach(([key, val]: any) => {
+                tempComponentEvents = {
+                  ...componentEvents,
+                  [key]: {
+                    ref: val.ref,
+                    types: val.types,
+                    event: null,
+                  },
+                };
+              })
+            );
+          }, 0);
+        }).then(() => {
+          setComponentEvents(tempComponentEvents);
         });
       };
 
@@ -52,7 +56,7 @@ function ComponentEventsProvider({ children }: { children: ReactNode }) {
           component.ref.removeEventListener(type, handler);
         });
       });
-  }, [componentEvents]);
+  }, []);
 
   const addEventListeners = ({
     ref,
@@ -75,16 +79,13 @@ function ComponentEventsProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <ComponentEventsContext.Provider value={{ addEventListeners, componentEvents }}>
+    <ComponentEventsContext.Provider
+      value={{ addEventListeners, events: componentEvents }}>
       {children}
     </ComponentEventsContext.Provider>
   );
 }
 
-/**
- *
- * @returns An event object relating to the event that was fired, only events that are discribed on the ComponentEventsProvider will be loaded onto the component event listener
- */
 function useComponentEvents() {
   const context = useContext(ComponentEventsContext);
   if (context === undefined)

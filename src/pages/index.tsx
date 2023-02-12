@@ -5,18 +5,18 @@ import { BasicBtn } from '@/components/shared/buttons/buttons';
 import { useComponentEvents } from '@/hooks/events/providers/component-events';
 
 export default function Index() {
-  const { componentEvents } = useComponentEvents();
+  const { events } = useComponentEvents();
   const [textColor, setTextColor] = useState('black');
 
   useEffect(() => {
-    const event = componentEvents['basic-button']?.event?.type;
-    if (event === 'mousedown' || event === 'click') {
+    const basicBtnEvent = events.basicButton?.event?.type;
+    console.log(basicBtnEvent);
+    if (basicBtnEvent === 'mouseover') {
       setTextColor('red');
-    } else if (event === 'mouseup' || event === 'mouseleave' || event === 'mouseout') {
+    } else if (basicBtnEvent === 'mouseout') {
       setTextColor('black');
     }
-    console.log(componentEvents);
-  }, [componentEvents]);
+  }, [events]);
 
   return (
     <main className={styles.mainContainer}>
