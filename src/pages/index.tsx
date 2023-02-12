@@ -1,19 +1,22 @@
 import styles from '../styles/pages/index.module.css';
 import Logo from '@/components/shared/icons/logo';
+import { useState, useEffect } from 'react';
 import { BasicBtn } from '@/components/shared/buttons/buttons';
-import { useWindowEvent } from '@/contexts/window-events';
-import { useInterval, useTimeout } from '@/hooks/async';
+import { useComponentEvents } from '@/hooks/events/providers/component-events';
 
 export default function Index() {
-  const event = useWindowEvent();
+  const { componentEvents } = useComponentEvents();
+  const [textColor, setTextColor] = useState('black');
 
-  useInterval(() => {
-    console.log('Hello');
-  }, 200);
-
-  useTimeout(() => {
-    console.log('Now');
-  }, 2000);
+  useEffect(() => {
+    const event = componentEvents['basic-button']?.event?.type;
+    if (event === 'mousedown' || event === 'click') {
+      setTextColor('red');
+    } else if (event === 'mouseup' || event === 'mouseleave' || event === 'mouseout') {
+      setTextColor('black');
+    }
+    console.log(componentEvents);
+  }, [componentEvents]);
 
   return (
     <main className={styles.mainContainer}>
@@ -24,7 +27,11 @@ export default function Index() {
             scale={5}
             shadow={'light'}
           />
-          <h1 className={styles.header}>React Hooks Lib</h1>
+          <h1
+            className={styles.header}
+            style={{ color: textColor }}>
+            React Hooks Lib
+          </h1>
         </header>
         <div className={styles.midSection}>
           <BasicBtn className={styles.btn}>Get started</BasicBtn>

@@ -1,3 +1,5 @@
+import { useComponentEvents } from '@/hooks/events/providers/component-events';
+
 export default function Logo({
   className,
   scale = 1,
@@ -7,10 +9,19 @@ export default function Logo({
   scale: number;
   shadow: string;
 }) {
+  const { addEventListeners } = useComponentEvents();
+
   scale < 0.1 && (scale = 1);
 
   return (
     <svg
+      ref={(ref) =>
+        addEventListeners({
+          ref,
+          id: 'logo',
+          types: ['click', 'mouseover'],
+        })
+      }
       className={className}
       xmlns='http://www.w3.org/2000/svg'
       width={20 * scale}
