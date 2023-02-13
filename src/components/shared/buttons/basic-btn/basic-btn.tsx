@@ -1,17 +1,23 @@
 import styles from './basic-btn.module.css';
-import { useComponentEvents } from '@/hooks/events/providers/component-events';
+import { useAppEvents } from '@/hooks/events/providers/app-events';
 import type { AnyProps } from '@/types/props';
 
-export default function BasicBtn({ className, children, ...props }: AnyProps) {
-  const { addEventListeners } = useComponentEvents();
+export default function BasicBtn({
+  eventId,
+  className,
+  children,
+  listeners,
+  ...props
+}: AnyProps) {
+  const { addEventListeners } = useAppEvents();
 
   return (
     <button
-      ref={(ref) =>
+      ref={(target) =>
         addEventListeners({
-          ref,
-          id: 'basicButton',
-          types: ['mouseover', 'mouseout', 'mousedown', 'mouseup', 'click'],
+          target,
+          eventId,
+          types: listeners,
         })
       }
       className={`${styles.btn} ${className}`}

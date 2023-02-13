@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom/client';
 import './styles/typography';
 import './styles/global.css';
 import Index from './pages/index';
-import { ComponentEventsProvider } from '@/hooks/events/providers/component-events';
+import { AppEventsProvider } from '@/hooks/events/providers/app-events';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <ComponentEventsProvider>
+    <AppEventsProvider>
       <Index />
-    </ComponentEventsProvider>
+    </AppEventsProvider>
   </React.StrictMode>
 );

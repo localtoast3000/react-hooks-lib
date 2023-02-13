@@ -1,25 +1,29 @@
-import { useComponentEvents } from '@/hooks/events/providers/component-events';
+import { useAppEvents } from '@/hooks/events/providers/app-events';
 
 export default function Logo({
   className,
+  eventId,
+  listeners = [],
   scale = 1,
   shadow = 'dark',
 }: {
   className: string;
+  eventId: string;
+  listeners: string[] | [];
   scale: number;
   shadow: string;
 }) {
-  const { addEventListeners } = useComponentEvents();
+  const { addEventListeners } = useAppEvents();
 
   scale < 0.1 && (scale = 1);
 
   return (
     <svg
-      ref={(ref) =>
+      ref={(target) =>
         addEventListeners({
-          ref,
-          id: 'logo',
-          types: ['click', 'mouseover'],
+          target,
+          eventId,
+          types: listeners,
         })
       }
       className={className}
